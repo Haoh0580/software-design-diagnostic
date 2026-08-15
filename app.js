@@ -9,10 +9,31 @@ const formatTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String
 
 function elapsed(ps) { return ps.seconds + (ps.startedAt ? Math.floor((Date.now() - ps.startedAt) / 1000) : 0); }
 function stopTimer() { const ps = activePartId && partState(activePartId); if (ps?.startedAt) { ps.seconds = elapsed(ps); ps.startedAt = null; save(); } clearInterval(ticker); }
-function show(view) { ['home-view','test-view','result-view'].forEach(id => $('#'+id).classList.toggle('hidden', id !== view)); }
+function show(view) { ['home-view','test-view','result-view','training-view','training-quiz-view'].forEach(id => $('#'+id).classList.toggle('hidden', id !== view)); }
 function renderHome() {
   stopTimer(); show('home-view');
   $('#part-list').innerHTML = TEST_PARTS.map(p => { const ps = partState(p.id), answered = Object.keys(ps.answers).filter(k => ps.answers[k].trim()).length; return `<article class="part-card" style="--part:${p.color}"><div><p class="part-kicker">Part ${p.id} · ${p.duration} 分鐘</p><h2>${p.title}</h2><p>${p.description}</p><small>${answered}/${p.questions.length} 已作答 · ${formatTime(elapsed(ps))}</small></div><button class="button" data-part="${p.id}">${ps.completed ? '再次檢視' : answered ? '繼續作答' : '開始'}</button></article>`; }).join('');
+}
+function renderTraining() {
+  stopTimer(); show('training-view');
+  $('#roadmap-list').innerHTML = TRAINING_ROADMAP.map((item, index) => `<article class="part-card" style="--part:${index < 5 ? '#2e6f95' : index < 9 ? '#714f91' : '#4d7c59'}"><div><p class="part-kicker">${item.dates}</p><h2>${item.title}</h2><p>${item.focus}</p></div></article>`).join('');
+  $('#training-pack-list').innerHTML = TRAINING_PACKS.map(pack => `<article class="part-card" style="--part:#12355b"><div><p class="part-kicker">${pack.label}</p><h2>${pack.title}</h2><p>${pack.source} · ${pack.questions.length} 題</p></div><button class="button" data-pack="${pack.id}">開始練習</button></article>`).join('');
+}
+function renderTrainingPack(id) {
+  const pack = TRAINING_PACKS.find(item => item.id === id); if (!pack) return;
+  show('training-quiz-view');
+  $('#training-pack-meta').textContent = pack.label;
+  $('#training-pack-title').textContent = pack.title;
+  $('#training-source').textContent = `題源：${pack.source}（原創練習題）`;
+  $('#training-questions').innerHTML = pack.questions.map((q, index) => `<article class="question-card" data-training-question="${index}" style="margin:12px 0"><p class="category">第 ${index + 1} 題</p><h3>${q.q}</h3><div class="choices">${q.c.map((choice, choiceIndex) => `<button class="choice" type="button" data-choice="${choiceIndex}" data-pack="${pack.id}" data-question="${index}" style="text-align:left;font:inherit">${String.fromCharCode(65 + choiceIndex)}．${choice}</button>`).join('')}</div><p class="autosave hidden" data-feedback> </p></article>`).join('');
+}
+function answerTrainingQuestion(button) {
+  const pack = TRAINING_PACKS.find(item => item.id === button.dataset.pack), question = pack?.questions[Number(button.dataset.question)]; if (!question) return;
+  const card = button.closest('[data-training-question]'), selected = Number(button.dataset.choice), feedback = card.querySelector('[data-feedback]');
+  card.querySelectorAll('[data-choice]').forEach(option => { option.disabled = true; if (Number(option.dataset.choice) === question.a) option.style.borderColor = '#2d7a4f'; });
+  button.style.borderColor = selected === question.a ? '#2d7a4f' : '#b44646';
+  feedback.classList.remove('hidden'); feedback.textContent = selected === question.a ? `正確。${question.e}` : `本題正解：${String.fromCharCode(65 + question.a)}。${question.e}`;
+  feedback.style.color = selected === question.a ? '#2d7a4f' : '#9b3e3e';
 }
 function startPart(id) { activePartId = id; activeQuestion = 0; const ps = partState(id); if (!ps.startedAt) { ps.startedAt = Date.now(); save(); } show('test-view'); ticker = setInterval(renderTimer, 1000); renderQuestion(); }
 function renderTimer() { $('#timer').textContent = formatTime(elapsed(partState(activePartId))); }
@@ -80,6 +101,11 @@ async function copyAiReport() {
   catch { $('#copy-status').textContent = '無法自動複製，請展開下方明細後長按或全選複製。'; }
 }
 $('#part-list').addEventListener('click', e => { if(e.target.dataset.part) startPart(e.target.dataset.part); });
+$('#open-training').onclick = renderTraining;
+$('#training-home').onclick = renderHome;
+$('#training-back').onclick = renderTraining;
+$('#training-pack-list').addEventListener('click', e => { if (e.target.dataset.pack) renderTrainingPack(e.target.dataset.pack); });
+$('#training-questions').addEventListener('click', e => { if (e.target.dataset.choice) answerTrainingQuestion(e.target); });
 $('#back-home').onclick = renderHome; $('#result-home').onclick = renderHome; $('#show-result').onclick = renderResults;
 $('#previous-question').onclick = () => { persistAnswer(); if(activeQuestion) { activeQuestion--; renderQuestion(); } };
 $('#next-question').onclick = () => { persistAnswer(); const p=TEST_PARTS.find(p=>p.id===activePartId); if(activeQuestion === p.questions.length-1) finishPart(); else { activeQuestion++; renderQuestion(); } };
@@ -88,5 +114,5 @@ $('#copy-ai-report').onclick = copyAiReport;
 $('#toggle-ai-report').onclick = () => setAiReportExpanded($('#toggle-ai-report').getAttribute('aria-expanded') !== 'true');
 function reset() { if(confirm('確定清除這台裝置上的所有作答紀錄嗎？')) { localStorage.removeItem(STORAGE_KEY); location.reload(); } }
 $('#reset-test').onclick = reset; $('#result-reset').onclick = reset;
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=5');
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=6');
 renderHome();

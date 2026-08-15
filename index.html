@@ -20,8 +20,22 @@
       <section id="home-view" aria-label="檢測首頁">
         <div class="notice"><strong>適合零碎時間：</strong>可先做一個 Part，之後從同一支手機繼續。完成後請直接截圖結果頁回傳。</div>
         <div id="part-list" class="part-list"></div>
+        <button id="open-training" class="button full">開啟 8 月～12 月訓練中心</button>
         <button id="show-result" class="button secondary full">查看目前結果</button>
         <button id="reset-test" class="text-button">清除本機作答紀錄</button>
+      </section>
+
+      <section id="training-view" class="hidden" aria-label="訓練中心">
+        <div class="test-topbar"><button id="training-home" class="back-button" aria-label="回到首頁">←</button><div><p class="eyebrow">115–116 訓練計畫</p><h2>到第二次模考</h2></div></div>
+        <p class="notice"><strong>雙軌原則：</strong>競賽期練 C#、Debug、演算法；模考期練資電類專一／專二。12/16 前的任務已排入。</p>
+        <div id="roadmap-list" class="part-list"></div>
+        <section class="profile-card"><h3>官方題源</h3><p>題組為依官方範圍改寫的原創練習；正式歷屆試題請由下列來源開啟。</p><p><a href="https://web1.tcte.edu.tw/EXAM/115_4y/" target="_blank" rel="noopener">115 統測資電類專二試題與答案</a><br><a href="https://www.tcte.edu.tw/doc/114Range_4y/114-4y-Range-04-2.pdf" target="_blank" rel="noopener">資電類專二官方考試大綱</a><br><a href="https://www.tcte.edu.tw/doc/115Range_4y/115-4y-04-1-range.pdf" target="_blank" rel="noopener">資電類專一官方考試大綱</a></p></section>
+        <h3>第一版練習題組</h3><div id="training-pack-list" class="part-list"></div>
+      </section>
+
+      <section id="training-quiz-view" class="hidden" aria-label="訓練題組">
+        <div class="test-topbar"><button id="training-back" class="back-button" aria-label="回到訓練中心">←</button><div><p id="training-pack-meta" class="eyebrow"></p><h2 id="training-pack-title"></h2></div></div>
+        <p id="training-source" class="muted"></p><div id="training-questions"></div>
       </section>
 
       <section id="test-view" class="hidden" aria-live="polite">
@@ -63,7 +77,7 @@
         <button id="result-reset" class="text-button">重新開始全部檢測</button>
       </section>
     </main>
-    <script src="questions.js?v=5"></script>
-    <script src="app.js?v=5"></script>
+    <script src="questions.js?v=6"></script>
+    <script src="app.js?v=6"></script>
   </body>
 </html>

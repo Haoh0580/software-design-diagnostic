@@ -46,3 +46,41 @@ const TEST_PARTS = [
     ]
   }
 ];
+
+const TRAINING_ROADMAP = [
+  { dates: '8/15–8/23', title: '診斷期', focus: '完成 Diagnostic、建立 Skill Profile；競賽 50%／模考 50%。' },
+  { dates: '8/24–9/20', title: '基礎強化期', focus: 'C# 資料型態、流程、陣列、函式、Dictionary／Stack／Queue；每週 1 次 90–120 分 Coding。' },
+  { dates: '9/21–10/11', title: '模考加重 I', focus: '統測專二主題＋C#；加入 BFS／DFS 與 Mini Contest。競賽 40%／模考 60%。' },
+  { dates: '10/12–10/18', title: '模考前一週', focus: '統測錯題與 Flash Card；Coding 只維持手感。' },
+  { dates: '10/19–10/20', title: '第一次模考', focus: '正式模考後立即做錯題原因分析。' },
+  { dates: '10/21–11/9', title: '競賽衝刺 I', focus: '歷屆題、限時解題、Debug／Algorithm；每週 2 次 Mini Contest。' },
+  { dates: '11/10–11/16', title: '競賽衝刺 II', focus: '完整競賽模擬；不使用 Google／AI，訓練讀題→Coding→Debug。' },
+  { dates: '11/17–11/23', title: '最後一週', focus: '熟悉題型、輕量複習與 Edge Case，不學新主題。' },
+  { dates: '11/24 起', title: '工科技藝競賽', focus: '正式比賽週；平台停止大量出新題。' },
+  { dates: '競賽後–12/14', title: '模考回歸', focus: '統測主科重整；以錯題與觀念回顧為主。' },
+  { dates: '12/15–12/16', title: '第二次模考', focus: '統測 100%；做成績分析，與第一次模考比較各科變化。' },
+  { dates: '12/17–12/21', title: '長期強化 I', focus: '依第二次模考的弱科建立短題組與每週複盤。' }
+];
+
+const TRAINING_PACKS = [
+  { id: 'csharp-core', label: '8/24–9/20', title: 'C# 核心與資料結構', source: '競賽基礎：C#／演算法', questions: [
+    { q: '要以學生編號快速查成績，最適合哪個結構？', c: ['List<int>', 'Dictionary<string, int>', 'Stack<int>', 'Queue<int>'], a: 1, e: 'Dictionary 以鍵查值，適合「學生編號 → 成績」。' },
+    { q: 'int x = 7 / 2; 的 x 值為何？', c: ['3', '3.5', '4', '編譯錯誤'], a: 0, e: '兩個運算元皆為 int，C# 做整數除法，結果為 3。' },
+    { q: '需要「後進先出」處理資料時，應使用？', c: ['Queue', 'Dictionary', 'Stack', 'HashSet'], a: 2, e: 'Stack 的規則是 LIFO（後進先出）。' }
+  ] },
+  { id: 'logic-algorithm', label: '9/21–11/23', title: 'Debug、演算法與競賽手感', source: '競賽衝刺：Trace／BFS／DFS／Edge Case', questions: [
+    { q: '已排序陣列找目標值，通常優先選？', c: ['二分搜尋', '泡沫排序', 'DFS', '列舉所有排列'], a: 0, e: '二分搜尋時間複雜度為 O(log n)。' },
+    { q: '陣列 data 長度為 n，正確走訪索引的迴圈條件為？', c: ['i <= n', 'i < n', 'i <= n - 2', 'i > n'], a: 1, e: '最後一個合法索引是 n - 1，因此條件應為 i < n。' },
+    { q: 'BFS 最典型的資料結構是？', c: ['Stack', 'Queue', 'Dictionary', 'Array'], a: 1, e: 'BFS 以 Queue 維持先進先出的走訪順序。' }
+  ] },
+  { id: 'pro2-mock', label: '9/21–12/16', title: '統測專二：數位邏輯／微處理機／程式設計', source: '依官方資電類專二考試大綱改寫', questions: [
+    { q: '十進位 13 轉為二進位為？', c: ['1011', '1101', '1110', '1001'], a: 1, e: '13 = 8 + 4 + 1，所以是 1101。' },
+    { q: '下列何者為 AND 閘輸出為 1 的必要條件？', c: ['至少一個輸入為 1', '所有輸入皆為 1', '所有輸入皆為 0', '輸入不同'], a: 1, e: 'AND 只有在所有輸入皆為 1 時輸出 1。' },
+    { q: '程式設計實習中，先檢查輸入範圍與陣列邊界，主要是在避免？', c: ['語法上色錯誤', '執行期索引錯誤', '網路斷線', '磁碟重組'], a: 1, e: '邊界檢查可避免越界等執行期錯誤。' }
+  ] },
+  { id: 'pro1-rebuild', label: '11/25–12/21', title: '統測專一：基本電學／電子學', source: '依官方資電類專一考試大綱改寫', questions: [
+    { q: '在直流電路中，歐姆定律為？', c: ['V = IR', 'P = I / V', 'R = VI', 'I = VR'], a: 0, e: '歐姆定律：電壓 V = 電流 I × 電阻 R。' },
+    { q: '串聯電阻電路的電流特性為？', c: ['各元件電流相同', '各元件電壓相同', '總電阻小於任一電阻', '沒有電壓降'], a: 0, e: '串聯只有一條電流路徑，因此各元件電流相同。' },
+    { q: '整流與濾波電路的主要目的為？', c: ['把交流轉成較平穩直流', '放大聲音', '儲存程式', '增加電阻'], a: 0, e: '整流先轉單向電流，濾波再降低漣波。' }
+  ] }
+];
