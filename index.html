@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#12355b" />
+    <meta name="description" content="電腦軟體設計競賽能力診斷" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>Diagnostic Test v1</title>
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="hero">
+        <p class="eyebrow">電腦軟體設計競賽</p>
+        <h1>Diagnostic Test <span>v1</span></h1>
+        <p class="hero-copy">短時間也能完成的行動優先能力檢測。每一部分可隨時暫停，進度只保存在這台裝置。</p>
+      </header>
+
+      <section id="home-view" aria-label="檢測首頁">
+        <div class="notice"><strong>適合零碎時間：</strong>可先做一個 Part，之後從同一支手機繼續。完成後請直接截圖結果頁回傳。</div>
+        <div id="part-list" class="part-list"></div>
+        <button id="show-result" class="button secondary full">查看目前結果</button>
+        <button id="reset-test" class="text-button">清除本機作答紀錄</button>
+      </section>
+
+      <section id="test-view" class="hidden" aria-live="polite">
+        <div class="test-topbar">
+          <button id="back-home" class="back-button" aria-label="回到所有部分">←</button>
+          <div><p id="test-part-label" class="eyebrow"></p><h2 id="test-title"></h2></div>
+          <div class="timer"><span>本部分</span><strong id="timer">00:00</strong></div>
+        </div>
+        <div class="progress-track"><div id="progress-fill"></div></div>
+        <p id="question-count" class="question-count"></p>
+        <form id="question-form" novalidate></form>
+        <div class="test-actions">
+          <button id="previous-question" class="button secondary" type="button">上一題</button>
+          <button id="next-question" class="button" type="button">下一題</button>
+        </div>
+        <button id="finish-part" class="text-button finish">完成此 Part 並查看結果</button>
+      </section>
+
+      <section id="result-view" class="hidden" aria-label="診斷結果">
+        <div class="result-heading">
+          <p class="eyebrow">可截圖的診斷摘要</p>
+          <h2>你的 Skill Profile</h2>
+          <p id="result-date" class="muted"></p>
+        </div>
+        <div id="overall-score" class="overall-score"></div>
+        <div id="result-cards" class="result-cards"></div>
+        <section class="profile-card"><h3>Skill Profile 摘要</h3><div id="profile-bars"></div><p id="profile-summary"></p></section>
+        <section class="profile-card"><h3>錯題類型</h3><div id="weakness-list" class="tag-list"></div></section>
+        <p class="disclaimer">Part D 是初步實作診斷，依解題步驟與關鍵概念評估，非實際編譯或線上評測結果。</p>
+        <button id="result-home" class="button full">回到檢測首頁</button>
+        <button id="result-reset" class="text-button">重新開始全部檢測</button>
+      </section>
+    </main>
+    <script src="questions.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
