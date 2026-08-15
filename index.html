@@ -4,80 +4,35 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#12355b" />
-    <meta name="description" content="電腦軟體設計競賽能力診斷" />
+    <meta name="description" content="個人競賽訓練中心" />
     <link rel="manifest" href="manifest.webmanifest" />
-    <link rel="stylesheet" href="styles.css" />
-    <title>Diagnostic Test v1</title>
+    <link rel="stylesheet" href="styles.css?v=7" />
+    <title>個人競賽訓練中心</title>
   </head>
   <body>
     <main class="app-shell">
-      <header class="hero">
-        <p class="eyebrow">電腦軟體設計競賽</p>
-        <h1>Diagnostic Test <span>v1</span></h1>
-        <p class="hero-copy">短時間也能完成的行動優先能力檢測。每一部分可隨時暫停，進度只保存在這台裝置。</p>
-      </header>
+      <header class="app-header"><p>個人競賽訓練中心</p><h1>Software Design Training Center</h1></header>
 
-      <section id="home-view" aria-label="檢測首頁">
-        <div class="notice"><strong>適合零碎時間：</strong>可先做一個 Part，之後從同一支手機繼續。完成後請直接截圖結果頁回傳。</div>
-        <div id="part-list" class="part-list"></div>
-        <button id="open-training" class="button full">開啟 8 月～12 月訓練中心</button>
-        <button id="show-result" class="button secondary full">查看目前結果</button>
-        <button id="reset-test" class="text-button">清除本機作答紀錄</button>
+      <section id="today-view" class="view" aria-label="Today">
+        <p class="section-label">重要目標</p><div id="goal-list" class="goal-list"></div>
+        <section class="panel phase-panel"><p class="section-label">Current Phase</p><h2 id="phase-name"></h2><p id="phase-dates" class="muted"></p><div class="ratio"><span id="competition-bar"></span></div><div class="ratio-label"><span id="competition-text"></span><span id="mock-text"></span></div><div class="ratio mock"><span id="mock-bar"></span></div></section>
+        <section class="panel"><div class="section-heading"><div><p class="section-label">Today Mission</p><h2>今日任務</h2></div><p id="mission-summary" class="summary"></p></div><p id="remaining-time" class="muted"></p><div id="mission-list" class="mission-list"></div></section>
+        <section class="panel"><p class="section-label">Quick Training</p><h2>我現在有多少時間？</h2><div id="duration-list" class="duration-list"></div><div id="duration-recommendation" class="recommendation"></div></section>
+        <aside class="hint"><strong>今日提醒：</strong><span id="daily-hint"></span></aside>
       </section>
 
-      <section id="training-view" class="hidden" aria-label="訓練中心">
-        <div class="test-topbar"><button id="training-home" class="back-button" aria-label="回到首頁">←</button><div><p class="eyebrow">115–116 訓練計畫</p><h2>到第二次模考</h2></div></div>
-        <p class="notice"><strong>雙軌原則：</strong>競賽期練 C#、Debug、演算法；模考期練資電類專一／專二。12/16 前的任務已排入。</p>
-        <div id="roadmap-list" class="part-list"></div>
-        <section class="profile-card"><h3>官方題源</h3><p>題組為依官方範圍改寫的原創練習；正式歷屆試題請由下列來源開啟。</p><p><a href="https://web1.tcte.edu.tw/EXAM/115_4y/" target="_blank" rel="noopener">115 統測資電類專二試題與答案</a><br><a href="https://www.tcte.edu.tw/doc/114Range_4y/114-4y-Range-04-2.pdf" target="_blank" rel="noopener">資電類專二官方考試大綱</a><br><a href="https://www.tcte.edu.tw/doc/115Range_4y/115-4y-04-1-range.pdf" target="_blank" rel="noopener">資電類專一官方考試大綱</a></p></section>
-        <h3>第一版練習題組</h3><div id="training-pack-list" class="part-list"></div>
-      </section>
+      <section id="quick-view" class="view" hidden><div class="panel"><p class="section-label">Quick Training</p><h2>快速訓練</h2><p>先選擇可用時間，系統會顯示適合的短練習組合。</p><button class="button" data-nav="today">回到 Today 選擇時間</button></div></section>
+      <section id="library-view" class="view" hidden><div class="panel"><p class="section-label">Practice Library</p><h2>練習題組</h2><div id="training-list" class="part-list"></div></div></section>
+      <section id="mistakes-view" class="view" hidden><div class="panel"><p class="section-label">Mistakes</p><h2>錯題整理</h2><p>Phase 1 先保留入口；之後會將 Diagnostic 與訓練題組的錯題集中在這裡。</p></div></section>
+      <section id="progress-view" class="view" hidden><div class="panel"><p class="section-label">Progress</p><h2>模考準備度</h2><div class="tag-list"><span>基本電學</span><span>電子學</span><span>微處理機</span><span>數位邏輯</span><span>程式設計實習</span></div><h2 class="subheading">競賽技能</h2><div class="tag-list"><span>C#</span><span>Array</span><span>String</span><span>Dictionary</span><span>Stack</span><span>Queue</span><span>BFS</span><span>DFS</span></div></div><div class="panel"><p class="section-label">Skill Check</p><h2>Diagnostic Test v1</h2><p>保留原本 Part A～D 與完整診斷報告。</p><button id="open-diagnostic" class="button full">開始／查看 Diagnostic Test</button></div></section>
 
-      <section id="training-quiz-view" class="hidden" aria-label="訓練題組">
-        <div class="test-topbar"><button id="training-back" class="back-button" aria-label="回到訓練中心">←</button><div><p id="training-pack-meta" class="eyebrow"></p><h2 id="training-pack-title"></h2></div></div>
-        <p id="training-source" class="muted"></p><div id="training-questions"></div>
-      </section>
+      <section id="diagnostic-view" class="view" hidden><div class="panel"><p class="section-label">Skill Check</p><h2>Diagnostic Test v1</h2><p>可分段完成，進度保存在這台裝置。</p><div id="part-list" class="part-list"></div><button id="show-result" class="button secondary full">查看目前結果</button></div></section>
+      <section id="test-view" class="view" hidden><button id="back-diagnostic" class="text-button">← 回到 Skill Check</button><div id="question-container"></div></section>
+      <section id="result-view" class="view" hidden><div id="result-container"></div></section>
+      <section id="pack-view" class="view" hidden><button class="text-button" data-nav="library">← 回到題庫</button><div id="pack-container"></div></section>
 
-      <section id="test-view" class="hidden" aria-live="polite">
-        <div class="test-topbar">
-          <button id="back-home" class="back-button" aria-label="回到所有部分">←</button>
-          <div><p id="test-part-label" class="eyebrow"></p><h2 id="test-title"></h2></div>
-          <div class="timer"><span>本部分</span><strong id="timer">00:00</strong></div>
-        </div>
-        <div class="progress-track"><div id="progress-fill"></div></div>
-        <p id="question-count" class="question-count"></p>
-        <form id="question-form" novalidate></form>
-        <div class="test-actions">
-          <button id="previous-question" class="button secondary" type="button">上一題</button>
-          <button id="next-question" class="button" type="button">下一題</button>
-        </div>
-        <button id="finish-part" class="text-button finish">完成此 Part 並查看結果</button>
-      </section>
-
-      <section id="result-view" class="hidden" aria-label="診斷結果">
-        <div class="result-heading">
-          <p class="eyebrow">可截圖的診斷摘要</p>
-          <h2>你的 Skill Profile</h2>
-          <p id="result-date" class="muted"></p>
-        </div>
-        <div id="overall-score" class="overall-score"></div>
-        <div id="result-cards" class="result-cards"></div>
-        <section class="profile-card"><h3>Skill Profile 摘要</h3><div id="profile-bars"></div><p id="profile-summary"></p></section>
-        <section class="profile-card"><h3>錯題類型</h3><div id="weakness-list" class="tag-list"></div></section>
-        <section class="profile-card ai-report-card">
-          <h3>提供給 AI 的完整作答報告</h3>
-          <p>包含每題題目、你的回答、正確答案或文字題參考回覆。可直接複製貼回 ChatGPT 做能力分析。</p>
-          <button id="copy-ai-report" class="button full">複製完整報告</button>
-          <p id="copy-status" class="copy-status" aria-live="polite"></p>
-          <button id="toggle-ai-report" class="button secondary full" aria-expanded="false">顯示完整作答明細</button>
-          <pre id="ai-report-preview" class="hidden" style="white-space:pre-wrap;overflow-wrap:anywhere;max-height:420px;overflow:auto;background:#f4f7f8;border-radius:10px;padding:13px;font:inherit;font-size:.82rem;line-height:1.6"></pre>
-        </section>
-        <p class="disclaimer">Part D 是初步實作診斷，依解題步驟與關鍵概念評估，非實際編譯或線上評測結果。</p>
-        <button id="result-home" class="button full">回到檢測首頁</button>
-        <button id="result-reset" class="text-button">重新開始全部檢測</button>
-      </section>
+      <nav class="bottom-nav" aria-label="主要導覽"><button data-nav="today"><b>⌂</b><span>Today</span></button><button data-nav="quick"><b>⚡</b><span>快練</span></button><button data-nav="library"><b>📚</b><span>題庫</span></button><button data-nav="mistakes"><b>✕</b><span>錯題</span></button><button data-nav="progress"><b>▥</b><span>進度</span></button></nav>
     </main>
-    <script src="questions.js?v=6"></script>
-    <script src="app.js?v=6"></script>
+    <script src="questions.js?v=7"></script><script src="app.js?v=7"></script>
   </body>
 </html>
