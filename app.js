@@ -52,6 +52,12 @@ function renderResults() {
   const wrongs = scores.flatMap(x=>x.wrong); const counts = wrongs.reduce((o,x)=>(o[x]=(o[x]||0)+1,o),{}); $('#weakness-list').innerHTML = Object.keys(counts).length ? Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<span>${k} · ${v}</span>`).join('') : '<span>尚未有錯題資料</span>';
   $('#ai-report-preview').textContent = buildAiReport(scores, completed);
   $('#copy-status').textContent = '';
+  setAiReportExpanded(false);
+}
+function setAiReportExpanded(expanded) {
+  $('#ai-report-preview').classList.toggle('hidden', !expanded);
+  $('#toggle-ai-report').setAttribute('aria-expanded', String(expanded));
+  $('#toggle-ai-report').textContent = expanded ? '收起完整作答明細' : '顯示完整作答明細';
 }
 function answerLabel(q, answer) { if (!answer) return '未作答'; return q.type === 'choice' ? `${String.fromCharCode(65 + Number(answer))}. ${q.choices[Number(answer)]}` : answer; }
 function referenceLabel(q) { return q.type === 'choice' ? `${String.fromCharCode(65 + Number(q.answer))}. ${q.choices[Number(q.answer)]}` : (q.referenceAnswer || '請由教練依題意與作答內容人工判讀。'); }
@@ -79,7 +85,8 @@ $('#previous-question').onclick = () => { persistAnswer(); if(activeQuestion) { 
 $('#next-question').onclick = () => { persistAnswer(); const p=TEST_PARTS.find(p=>p.id===activePartId); if(activeQuestion === p.questions.length-1) finishPart(); else { activeQuestion++; renderQuestion(); } };
 $('#finish-part').onclick = finishPart;
 $('#copy-ai-report').onclick = copyAiReport;
+$('#toggle-ai-report').onclick = () => setAiReportExpanded($('#toggle-ai-report').getAttribute('aria-expanded') !== 'true');
 function reset() { if(confirm('確定清除這台裝置上的所有作答紀錄嗎？')) { localStorage.removeItem(STORAGE_KEY); location.reload(); } }
 $('#reset-test').onclick = reset; $('#result-reset').onclick = reset;
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=4');
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=5');
 renderHome();

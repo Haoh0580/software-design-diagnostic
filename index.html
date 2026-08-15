@@ -55,14 +55,15 @@
           <p>包含每題題目、你的回答、正確答案或文字題參考回覆。可直接複製貼回 ChatGPT 做能力分析。</p>
           <button id="copy-ai-report" class="button full">複製完整報告</button>
           <p id="copy-status" class="copy-status" aria-live="polite"></p>
-          <details><summary>在頁面中查看完整作答明細</summary><pre id="ai-report-preview"></pre></details>
+          <button id="toggle-ai-report" class="button secondary full" aria-expanded="false">顯示完整作答明細</button>
+          <pre id="ai-report-preview" class="hidden" style="white-space:pre-wrap;overflow-wrap:anywhere;max-height:420px;overflow:auto;background:#f4f7f8;border-radius:10px;padding:13px;font:inherit;font-size:.82rem;line-height:1.6"></pre>
         </section>
         <p class="disclaimer">Part D 是初步實作診斷，依解題步驟與關鍵概念評估，非實際編譯或線上評測結果。</p>
         <button id="result-home" class="button full">回到檢測首頁</button>
         <button id="result-reset" class="text-button">重新開始全部檢測</button>
       </section>
     </main>
-    <script src="questions.js?v=4"></script>
-    <script src="app.js?v=4"></script>
+    <script src="questions.js?v=5"></script>
+    <script src="app.js?v=5"></script>
   </body>
 </html>
