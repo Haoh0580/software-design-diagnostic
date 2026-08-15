@@ -50,13 +50,36 @@ function renderResults() {
   const weakest = completedScores[0];
   $('#profile-summary').textContent = weakest ? `目前最值得優先加強：${weakest.part.title}（${weakest.score.percent}%）。先針對錯題類型做短練習，再回來重做這個 Part。` : '先完成任一 Part，這裡會整理你的優先練習方向。';
   const wrongs = scores.flatMap(x=>x.wrong); const counts = wrongs.reduce((o,x)=>(o[x]=(o[x]||0)+1,o),{}); $('#weakness-list').innerHTML = Object.keys(counts).length ? Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<span>${k} · ${v}</span>`).join('') : '<span>尚未有錯題資料</span>';
+  $('#ai-report-preview').textContent = buildAiReport(scores, completed);
+  $('#copy-status').textContent = '';
+}
+function answerLabel(q, answer) { if (!answer) return '未作答'; return q.type === 'choice' ? `${String.fromCharCode(65 + Number(answer))}. ${q.choices[Number(answer)]}` : answer; }
+function referenceLabel(q) { return q.type === 'choice' ? `${String.fromCharCode(65 + Number(q.answer))}. ${q.choices[Number(q.answer)]}` : (q.referenceAnswer || '請由教練依題意與作答內容人工判讀。'); }
+function buildAiReport(scores, completed) {
+  const lines = ['# 電腦軟體設計競賽 Diagnostic Test v1｜AI 判讀報告', `日期：${new Date().toLocaleDateString('zh-TW')}`, `完成 Parts：${completed}/4`, ''];
+  TEST_PARTS.forEach((part, index) => {
+    const ps = partState(part.id), score = scores[index];
+    lines.push(`## Part ${part.id}｜${part.title}`, `分數：${score.percent}%（${score.correct}/${score.total}）｜作答時間：${formatTime(score.seconds)}`, '');
+    part.questions.forEach((q, number) => {
+      const answer = ps.answers[q.id] || '';
+      const systemNote = q.type === 'choice' ? (answer ? (isCorrect(q, answer) ? '正確' : '錯誤') : '未作答') : (answer ? (isCorrect(q, answer) ? '關鍵概念初判符合；仍建議人工判讀。' : '關鍵概念初判不足；請人工判讀。') : '未作答');
+      lines.push(`### ${part.id}${number + 1}｜${q.category}`, `題目：${q.prompt.replace(/\n/g, ' ')}`, `使用者作答：${answerLabel(q, answer)}`, `正確答案／參考回覆：${referenceLabel(q)}`, `系統判定：${systemNote}`, '');
+    });
+  });
+  lines.push('## 請 AI 協助分析', '請根據上述逐題作答，判斷我的 C# 語法、Trace／Debug、演算法策略、實作規劃、邊界條件與測試能力；區分「觀念不熟」、「表達不足」與「可能只是關鍵字未命中」，並提出下一週可執行的短練習安排。');
+  return lines.join('\n');
+}
+async function copyAiReport() {
+  try { await navigator.clipboard.writeText($('#ai-report-preview').textContent); $('#copy-status').textContent = '已複製。現在可直接貼到 ChatGPT，請 AI 進行完整能力分析。'; }
+  catch { $('#copy-status').textContent = '無法自動複製，請展開下方明細後長按或全選複製。'; }
 }
 $('#part-list').addEventListener('click', e => { if(e.target.dataset.part) startPart(e.target.dataset.part); });
 $('#back-home').onclick = renderHome; $('#result-home').onclick = renderHome; $('#show-result').onclick = renderResults;
 $('#previous-question').onclick = () => { persistAnswer(); if(activeQuestion) { activeQuestion--; renderQuestion(); } };
 $('#next-question').onclick = () => { persistAnswer(); const p=TEST_PARTS.find(p=>p.id===activePartId); if(activeQuestion === p.questions.length-1) finishPart(); else { activeQuestion++; renderQuestion(); } };
 $('#finish-part').onclick = finishPart;
+$('#copy-ai-report').onclick = copyAiReport;
 function reset() { if(confirm('確定清除這台裝置上的所有作答紀錄嗎？')) { localStorage.removeItem(STORAGE_KEY); location.reload(); } }
 $('#reset-test').onclick = reset; $('#result-reset').onclick = reset;
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=3');
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=4');
 renderHome();
