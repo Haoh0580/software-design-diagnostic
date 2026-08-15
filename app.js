@@ -58,5 +58,5 @@ $('#next-question').onclick = () => { persistAnswer(); const p=TEST_PARTS.find(p
 $('#finish-part').onclick = finishPart;
 function reset() { if(confirm('確定清除這台裝置上的所有作答紀錄嗎？')) { localStorage.removeItem(STORAGE_KEY); location.reload(); } }
 $('#reset-test').onclick = reset; $('#result-reset').onclick = reset;
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=3');
 renderHome();
