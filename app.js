@@ -26,9 +26,16 @@ function renderQuestion() {
   let input = q.type === 'choice' ? `<div class="choices">${q.choices.map((c,i) => `<label class="choice ${answer === String(i) ? 'selected':''}"><input type="radio" name="answer" value="${i}" ${answer === String(i) ? 'checked':''}><span>${String.fromCharCode(65+i)}</span>${escapeHtml(c)}</label>`).join('')}</div>` : `<textarea name="answer" rows="${q.type === 'long' ? 9 : 4}" placeholder="在此作答…">${escapeHtml(answer)}</textarea>`;
   $('#question-form').innerHTML = `<article class="question-card"><p class="category">${q.category}</p><h3>${prompt}</h3>${input}<p class="autosave">會自動儲存到此裝置</p></article>`;
   $('#previous-question').disabled = activeQuestion === 0; $('#next-question').textContent = activeQuestion === part.questions.length - 1 ? '儲存並完成' : '下一題';
-  $('#question-form').oninput = persistAnswer; $('#question-form').onchange = persistAnswer;
+  $('#question-form').oninput = event => { if (event.target.matches('textarea')) persistAnswer(event); };
+  $('#question-form').onchange = persistAnswer;
 }
-function persistAnswer() { const input = $('#question-form [name=answer]'), value = input?.value || ''; partState(activePartId).answers[TEST_PARTS.find(p=>p.id===activePartId).questions[activeQuestion].id] = value; save(); if (input?.type === 'radio') renderQuestion(); }
+function persistAnswer(event) {
+  const form = $('#question-form');
+  const input = event?.target || form.querySelector('[name=answer]:checked') || form.querySelector('[name=answer]');
+  if (!input) return;
+  partState(activePartId).answers[TEST_PARTS.find(p => p.id === activePartId).questions[activeQuestion].id] = input.value;
+  save();
+}
 function normal(s) { return (s || '').toLowerCase().replace(/\s/g, ''); }
 function isCorrect(q, answer) { if (q.type === 'choice') return answer === q.answer; if (q.answer) return q.answer.includes(normal(answer)); return (q.keywords || []).filter(k => normal(answer).includes(normal(k))).length >= (q.type === 'long' ? 2 : 1); }
 function scorePart(p) { const ps = partState(p.id), wrong = [], correct = p.questions.filter(q => { const answer = ps.answers[q.id] || ''; const ok = isCorrect(q, answer); if (answer.trim() && !ok) wrong.push(q.category); return ok; }).length; return { answered:Object.values(ps.answers).filter(a=>a.trim()).length, correct, total:p.questions.length, percent:Math.round(correct/p.questions.length*100), seconds:elapsed(ps), wrong }; }
